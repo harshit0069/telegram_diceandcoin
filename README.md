@@ -6,7 +6,7 @@ Flip a coin and roll dice via Telegram commands.
 - `/roll` – roll a 6-sided die (1–6)
 
 
-#Deploy to Render
+##Deploy to Render
 
 1. Fork/Upload this repo to your GitHub.
 
