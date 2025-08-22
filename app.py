@@ -1,13 +1,10 @@
 import os
-import re
 import time
-import json
-import math
 import random
 import signal
 import threading
 import sys
-from typing import Optional, Tuple
+from typing import Optional
 
 import requests
 from flask import Flask, jsonify
@@ -50,60 +47,15 @@ def tg_api(method: str, **params):
         return {"ok": False, "error": str(e)}
 
 
-def send_message(chat_id: str | int, text: str, parse_mode: Optional[str] = None):
+def send_message(chat_id: str | int, text: str):
     payload = {"chat_id": chat_id, "text": text}
-    if parse_mode:
-        payload["parse_mode"] = parse_mode
     resp = tg_api("sendMessage", **payload)
     if not resp.get("ok"):
         print(f"[TG SEND FAIL] {resp}")
 
 
-def parse_roll_arg(s: str) -> Tuple[int, int]:
-    """
-    Accepts:
-      - empty string -> 1d6
-      - integer -> 1d<int>
-      - NdM like 2d6, 1D20 (case-insensitive)
-    Enforces: 1 <= N <= 20, 2 <= M <= 1000
-    """
-    s = s.strip().lower()
-    if not s:
-        return 1, 6
-    if re.fullmatch(r"\d+", s):
-        n, m = 1, int(s)
-    else:
-        mobj = re.fullmatch(r"(\d{1,2})d(\d{1,4})", s)
-        if not mobj:
-            raise ValueError("Invalid format. Use /roll, /roll 20, or /roll NdM e.g. 2d6")
-        n, m = int(mobj.group(1)), int(mobj.group(2))
-    n = max(1, min(n, 20))
-    m = max(2, min(m, 1000))
-    return n, m
-
-
 def handle_command(chat_id: int, text: str):
-    t = text.strip()
-    # remove bot username suffix like /roll@YourBot
-    t = re.sub(r"@(\w+)", "", t)
-
-    if t.startswith("/start"):
-        send_message(
-            chat_id,
-            (
-                "👋 Namaste! Main ek simple bot hoon.\n\n"
-                "Commands:\n"
-                "• /flip — flip a coin\n"
-                "• /coin — same as /flip\n"
-                "• /roll — roll 1–6\n"
-                "• /roll NdM — e.g. 2d6, 1d20\n"
-                "• /help — show commands\n"
-            ),
-        )
-        return
-
-    if t.startswith("/help"):
-        return handle_command(chat_id, "/start")
+    t = text.strip().lower()
 
     if t.startswith("/flip") or t.startswith("/coin"):
         result = random.choice(["HEADS", "TAILS"])  # unbiased
@@ -111,23 +63,12 @@ def handle_command(chat_id: int, text: str):
         return
 
     if t.startswith("/roll"):
-        arg = t[len("/roll"):].strip()
-        try:
-            n, m = parse_roll_arg(arg)
-        except ValueError as e:
-            send_message(chat_id, f"❌ {e}")
-            return
-
-        rolls = [random.randint(1, m) for _ in range(n)]
-        total = sum(rolls)
-        if n == 1:
-            send_message(chat_id, f"🎲 d{m} → {rolls[0]}")
-        else:
-            send_message(chat_id, f"🎲 {n}d{m} → {rolls} = {total}")
+        roll = random.randint(1, 6)
+        send_message(chat_id, f"🎲 d6 → {roll}")
         return
 
     # Fallback
-    send_message(chat_id, "🤖 Unknown command. Type /help")
+    send_message(chat_id, "🤖 Unknown command. Try /flip or /roll")
 
 
 # ---------- Polling Thread ----------
@@ -136,7 +77,6 @@ def poll_loop():
     global last_update_id
     ensure_env_or_die()
 
-    # Log startup (if configured)
     if LOG_CHAT_ID:
         try:
             send_message(LOG_CHAT_ID, "✅ Bot started on Render (polling mode)")
@@ -224,9 +164,7 @@ def handle_shutdown(sig, frame):
 signal.signal(signal.SIGTERM, handle_shutdown)
 signal.signal(signal.SIGINT, handle_shutdown)
 
-# Start at import time (so gunicorn worker begins polling immediately)
 start_poller_once()
-
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
