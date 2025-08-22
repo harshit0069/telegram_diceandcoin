@@ -64,7 +64,7 @@ def handle_command(chat_id: int, text: str):
 
     if t.startswith("/roll"):
         roll = random.randint(1, 6)
-        send_message(chat_id, f"🎲 d6 → {roll}")
+        send_message(chat_id, f"🎲 YOU ROLLED → {roll}")
         return
 
     # Fallback
