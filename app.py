@@ -67,9 +67,6 @@ def handle_command(chat_id: int, text: str):
         send_message(chat_id, f"🎲 YOU ROLLED → {roll}")
         return
 
-    # Fallback
-    send_message(chat_id, "🤖 Unknown command. Try /flip or /roll")
-
 
 # ---------- Polling Thread ----------
 
