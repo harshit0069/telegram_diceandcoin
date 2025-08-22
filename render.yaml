@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: telegram-coin-dice-bot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 1 -t 0 app:app
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
