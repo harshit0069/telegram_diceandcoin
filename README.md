@@ -7,7 +7,6 @@ Flip a coin and roll dice via Telegram commands.
 
 
 ##Deploy to Render
-
 1. Fork/Upload this repo to your GitHub.
 
 
