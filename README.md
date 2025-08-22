@@ -7,6 +7,7 @@ Flip a coin and roll dice via Telegram commands.
 
 
 ##Deploy to Render
+
 1. Fork/Upload this repo to your GitHub.
 
 
@@ -35,13 +36,13 @@ gunicorn -w 1 -t 0 app:app
 
 
 4. Environment Variables (Render → Environment):
-
+```
 BOT_TOKEN = your Telegram Bot token from @BotFather (REQUIRED)
 
 (Optional) LOG_CHAT_ID = a chat or user ID to receive startup logs (bot must have chatted there once). Not required.
 
 (Optional) tune polling vars (POLL_TIMEOUT_SEC, POLL_SLEEP_SEC). Defaults are fine.
-
+```
 
 
 5. Deploy. Health endpoint is /health. If all good you’ll see { "ok": true, ... }.
