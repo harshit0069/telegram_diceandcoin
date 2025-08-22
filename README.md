@@ -3,11 +3,8 @@
 Flip a coin and roll dice via Telegram commands. Zero DB, tiny footprint, deploys cleanly on **Render**.
 
 ## Commands
-- `/start` – greet + help
-- `/help` – command list
 - `/flip` or `/coin` – heads/tails
 - `/roll` – roll a 6-sided die (1–6)
-- `/roll NdM` – roll N M-sided dice, e.g. `2d6`, `1d20`, `4d8` (N 1–20, M 2–1000)
 
 ## Quick Start (Local)
 ```bash
