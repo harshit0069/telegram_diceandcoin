@@ -1,22 +1,12 @@
 # Telegram Coin & Dice Bot (Render-ready)
-
-Flip a coin and roll dice via Telegram commands. Zero DB, tiny footprint, deploys cleanly on **Render**.
+Flip a coin and roll dice via Telegram commands.
 
 ## Commands
 - `/flip` or `/coin` – heads/tails
 - `/roll` – roll a 6-sided die (1–6)
 
-## Quick Start (Local)
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-export BOT_TOKEN=123456:ABC-YourToken
-export PORT=5000
-python app.py
 
-Open http://localhost:5000/health to see status. Talk to your bot on Telegram.
-
-Deploy to Render
+#Deploy to Render
 
 1. Fork/Upload this repo to your GitHub.
 
@@ -28,9 +18,15 @@ Deploy to Render
 
 Environment: Python 3
 
-Build command: pip install -r requirements.txt
+Build command:
+```
+pip install -r requirements.txt
+```
 
-Start command: gunicorn -w 1 -t 0 app:app
+Start command:
+```
+gunicorn -w 1 -t 0 app:app
+```
 
 -w 1 ensures one worker (so only one polling thread runs).
 
